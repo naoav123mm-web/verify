@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>التحقق من التقرير الطبي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -30,12 +32,15 @@
   <div class="body" id="body"></div>
   <div class="note" id="note"></div>
 </div>
+
 <script>
+/* الصق هنا إعدادات مشروع Firebase (Project settings → Your apps → Web app) */
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBkXWownNeK0o1OA07pX6oqSkqgSuqJnX4",
-  authDomain: "rehab-reports-cd5aa.firebaseapp.com",
-  projectId: "rehab-reports-cd5aa"
+  apiKey: "PASTE_API_KEY",
+  authDomain: "PASTE_PROJECT.firebaseapp.com",
+  projectId: "PASTE_PROJECT_ID"
 };
+
 const $ = id => document.getElementById(id);
 function show(kind, icon, title, rows, note){
   $("top").className = "top " + kind;
@@ -51,10 +56,12 @@ function show(kind, icon, title, rows, note){
   });
   $("note").textContent = note || "";
 }
+
 (async function(){
   const p = new URLSearchParams(location.search);
   const ref = (p.get("ref") || "").trim(), code = (p.get("code") || "").trim();
   if(!ref || !code){ show("bad", "✖", "رابط غير مكتمل", [], "امسح الباركود من التقرير الأصلي."); return; }
+  if(FIREBASE_CONFIG.apiKey.startsWith("PASTE")){ show("warn", "!", "الصفحة غير مهيأة", [], "أدخل إعدادات Firebase داخل الملف."); return; }
   try{
     firebase.initializeApp(FIREBASE_CONFIG);
     const id = (ref + "_" + code).replace(/[\/\s]/g, "_");
